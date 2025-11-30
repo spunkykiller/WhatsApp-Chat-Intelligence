@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whatsapp GOD Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-sidebar: #020617;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --accent: #6366f1;
+            --accent-hover: #4f46e5;
+            --border: #334155;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        .light-theme {
+            --bg-dark: #f8fafc;
+            --bg-card: #ffffff;
+            --bg-sidebar: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 320px;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow-y: auto;
+            flex-shrink: 0;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--accent);
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 5px;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(128, 128, 128, 0.1);
+        }
+
+        /* Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        .nav-tab {
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        .nav-tab.active {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .filter-section {
+            margin-bottom: 24px;
+        }
+
+        .filter-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+
+        .checkbox-item input {
+            margin-top: 3px;
+            accent-color: var(--accent);
+        }
+
+        .sub-checkboxes {
+            margin-left: 24px;
+            margin-top: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            border-left: 2px solid var(--border);
+            padding-left: 10px;
+        }
+
+        .sub-checkboxes label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Main Content */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .header {
+            padding: 20px 30px;
+            background-color: var(--bg-dark);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            gap: 20px;
+        }
+
+        .search-container {
+            position: relative;
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 16px;
+            padding-left: 40px;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: border-color 0.3s, background-color 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .sort-select {
+            padding: 10px;
+            border-radius: 8px;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            cursor: pointer;
+            min-width: 180px;
+        }
+
+        .btn-action {
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: none;
+            background-color: var(--accent);
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .btn-action:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .stats {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            background-color: var(--bg-dark);
+        }
+
+        .grid-view {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(600px, 1fr));
+            gap: 20px;
+            align-content: start;
+        }
+
+        /* Analytics View */
+        .analytics-view {
+            display: none;
+            flex-direction: column;
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .analytics-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .analytics-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+
+        .chart-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .bar-label {
+            width: 200px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .bar-container {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            height: 24px;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 4px;
+            transition: width 1s;
+        }
+
+        .bar-value {
+            margin-left: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            width: 40px;
+        }
+
+        /* Message Card */
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s, border-color 0.3s;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: var(--accent);
+        }
+
+        .star-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .star-btn.starred {
+            color: #fbbf24;
+            /* Gold */
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-right: 30px;
+            /* Space for star */
+        }
+
+        .card-meta {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-cat {
+            background: rgba(99, 102, 241, 0.15);
+            color: var(--accent);
+        }
+
+        .badge-sub {
+            background: rgba(148, 163, 184, 0.15);
+            color: var(--text-secondary);
+        }
+
+        .confidence-high {
+            border-left: 4px solid var(--success);
+        }
+
+        .confidence-med {
+            border-left: 4px solid var(--warning);
+        }
+
+        .confidence-low {
+            border-left: 4px solid var(--text-secondary);
+        }
+
+        .sender-info {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sender-name {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .group-name {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .card-body {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+            white-space: pre-wrap;
+            margin-bottom: 16px;
+        }
+
+        .card-body a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .card-body a:hover {
+            text-decoration: underline;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border);
+            padding-top: 12px;
+            font-size: 0.85rem;
+        }
+
+        .smart-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .smart-tag {
+            background: rgba(128, 128, 128, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .date-display {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        /* Controls */
+        select,
+        input[type="date"] {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 8px;
+            border-radius: 6px;
+            width: 100%;
+            margin-bottom: 8px;
+        }
+
+        .custom-date-inputs {
+            display: none;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .custom-date-inputs.active {
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <div class="brand">
+            <span>⚡ Whatsapp GOD</span>
+            <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">🌙</button>
+        </div>
+
+        <div class="nav-tabs">
+            <div class="nav-tab active" onclick="switchTab('home')">Home</div>
+            <div class="nav-tab" onclick="switchTab('starred')">Starred</div>
+            <div class="nav-tab" onclick="switchTab('analytics')">Analytics</div>
+        </div>
+
+        <div id="sidebarFilters">
+            <div class="filter-section">
+                <div class="filter-title">Date Range</div>
+                <select id="dateFilter" onchange="handleDateFilterChange()">
+                    <option value="1">Last 24 Hours</option>
+                    <option value="7">Last 7 Days</option>
+                    <option value="30">Last 30 Days</option>
+                    <option value="all" selected>All Time</option>
+                    <option value="custom">Custom Range</option>
+                </select>
+                <div id="customDateInputs" class="custom-date-inputs">
+                    <input type="date" id="startDate" onchange="applyFilters()" placeholder="Start Date">
+                    <input type="date" id="endDate" onchange="applyFilters()" placeholder="End Date">
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">Categories</div>
+                <div id="categoryFilters" class="checkbox-group">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">Smart Filters</div>
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="hideNotUseful" checked onchange="applyFilters()">
+                        Hide "Not Useful"
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="showOnlineOnly" onchange="applyFilters()">
+                        Online Events Only
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="showFreeOnly" onchange="applyFilters()">
+                        Free Opportunities Only
+                    </label>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">Confidence</div>
+                <select id="confidenceFilter" onchange="applyFilters()">
+                    <option value="all">All</option>
+                    <option value="High">High Confidence Only</option>
+                    <option value="Medium">Medium & High</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="header">
+            <div class="search-container" id="searchContainer">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" id="searchInput" placeholder="Search keywords, cities, tags..."
+                    oninput="applyFilters()">
+            </div>
+
+            <div class="header-controls" id="headerControls">
+                <select id="sortFilter" class="sort-select" onchange="applyFilters()">
+                    <option value="date_desc">Date: Newest First</option>
+                    <option value="date_asc">Date: Oldest First</option>
+                    <option value="conf_desc">Confidence: High to Low</option>
+                    <option value="conf_asc">Confidence: Low to High</option>
+                </select>
+                <button class="btn-action" onclick="exportData()">Export CSV</button>
+                <div class="stats" id="statsDisplay">Showing 0 messages</div>
+            </div>
+        </div>
+
+        <div class="content-area">
+            <div id="resultsArea" class="grid-view">
+                <!-- Cards go here -->
+            </div>
+
+            <div id="analyticsArea" class="analytics-view">
+                <div class="analytics-card">
+                    <div class="analytics-title">Top Senders</div>
+                    <div id="topSendersChart"></div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-title">Category Breakdown</div>
+                    <div id="categoryChart"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script>
+        // Configuration for Categories (matches parser.js)
+        const categoryStructure = {
+            'Opportunities': ['Internships', 'Full-time Jobs', 'Freelancing', 'Volunteers', 'Fellowships', 'Programs / Cohorts'],
+            'Events': ['Hackathons', 'Meetups', 'Workshops', 'Webinars / Online Events', 'Summits / Conferences', 'Startup Pitches / Demo Days'],
+            'Funding': ['Startup Grants', 'Govt Schemes', 'Pitch Competitions', 'Scholarships', 'Innovation Challenges'],
+            'Academic / Exams': ['Competitions', 'Scholarships (student)', 'Paper Calls / Journals', 'Bootcamps'],
+            'Resources': ['Courses', 'Tools', 'Templates', 'Announcements', 'Important Links']
+        };
+
+        let allData = [];
+        let currentTab = 'home';
+        let starredIds = JSON.parse(localStorage.getItem('starredMessages') || '[]');
+
+        function init() {
+            if (typeof window.whatsappGodData !== 'undefined') {
+                allData = window.whatsappGodData;
+                renderCategoryFilters();
+
+                // Load theme preference
+                if (localStorage.getItem('theme') === 'light') {
+                    document.body.classList.add('light-theme');
+                    document.querySelector('.theme-toggle').textContent = '☀️';
+                }
+
+                applyFilters();
+            } else {
+                document.getElementById('resultsArea').innerHTML = '<div style="text-align:center; color:red;">Error: data.js not loaded.</div>';
+            }
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+            const isLight = document.body.classList.contains('light-theme');
+            document.querySelector('.theme-toggle').textContent = isLight ? '☀️' : '🌙';
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`.nav-tab[onclick="switchTab('${tab}')"]`).classList.add('active');
+
+            const resultsArea = document.getElementById('resultsArea');
+            const analyticsArea = document.getElementById('analyticsArea');
+            const sidebarFilters = document.getElementById('sidebarFilters');
+            const searchContainer = document.getElementById('searchContainer');
+            const headerControls = document.getElementById('headerControls');
+
+            if (tab === 'analytics') {
+                resultsArea.style.display = 'none';
+                analyticsArea.style.display = 'flex';
+                sidebarFilters.style.opacity = '0.5';
+                sidebarFilters.style.pointerEvents = 'none';
+                searchContainer.style.visibility = 'hidden';
+                headerControls.style.visibility = 'hidden';
+                renderAnalytics();
+            } else {
+                resultsArea.style.display = 'grid';
+                analyticsArea.style.display = 'none';
+                sidebarFilters.style.opacity = '1';
+                sidebarFilters.style.pointerEvents = 'auto';
+                searchContainer.style.visibility = 'visible';
+                headerControls.style.visibility = 'visible';
+                applyFilters();
+            }
+        }
+
+        function toggleStar(id) {
+            if (starredIds.includes(id)) {
+                starredIds = starredIds.filter(sid => sid !== id);
+            } else {
+                starredIds.push(id);
+            }
+            localStorage.setItem('starredMessages', JSON.stringify(starredIds));
+            applyFilters(); // Re-render to update star icon
+        }
+
+        function renderCategoryFilters() {
+            const container = document.getElementById('categoryFilters');
+            let html = '';
+
+            for (const [cat, subCats] of Object.entries(categoryStructure)) {
+                html += `
+                <div class="category-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" class="cat-checkbox" value="${cat}" checked onchange="toggleSubCats(this, '${cat}')">
+                        ${cat}
+                    </label>
+                    <div class="sub-checkboxes" id="sub-${cat.replace(/\s/g, '')}">
+                        ${subCats.map(sub => `
+                            <label class="checkbox-item">
+                                <input type="checkbox" class="sub-checkbox" data-parent="${cat}" value="${sub}" checked onchange="applyFilters()">
+                                ${sub}
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            }
+
+            // Add "Uncategorized" option
+            html += `
+            <div class="category-group" style="margin-top:10px;">
+                <label class="checkbox-item">
+                    <input type="checkbox" class="cat-checkbox" value="Uncategorized" checked onchange="applyFilters()">
+                    Uncategorized
+                </label>
+            </div>
+        `;
+
+            container.innerHTML = html;
+        }
+
+        function toggleSubCats(checkbox, catName) {
+            const subContainer = document.getElementById(`sub-${catName.replace(/\s/g, '')}`);
+            if (subContainer) {
+                const subs = subContainer.querySelectorAll('input');
+                subs.forEach(sub => sub.checked = checkbox.checked);
+            }
+            applyFilters();
+        }
+
+        function handleDateFilterChange() {
+            const dateRange = document.getElementById('dateFilter').value;
+            const customInputs = document.getElementById('customDateInputs');
+
+            if (dateRange === 'custom') {
+                customInputs.classList.add('active');
+            } else {
+                customInputs.classList.remove('active');
+            }
+            applyFilters();
+        }
+
+        function parseDate(dateStr) {
+            const [d, m, y] = dateStr.split('/');
+            return new Date(`${y}-${m}-${d}`);
+        }
+
+        function applyFilters() {
+            if (currentTab === 'analytics') return;
+
+            const searchText = document.getElementById('searchInput').value.toLowerCase();
+            const dateRange = document.getElementById('dateFilter').value;
+            const hideNotUseful = document.getElementById('hideNotUseful').checked;
+            const showOnlineOnly = document.getElementById('showOnlineOnly').checked;
+            const showFreeOnly = document.getElementById('showFreeOnly').checked;
+            const confidenceLevel = document.getElementById('confidenceFilter').value;
+            const sortOption = document.getElementById('sortFilter').value;
+
+            // Get selected categories and subcategories
+            const selectedCats = Array.from(document.querySelectorAll('.cat-checkbox:checked')).map(cb => cb.value);
+            const selectedSubs = Array.from(document.querySelectorAll('.sub-checkbox:checked')).map(cb => cb.value);
+
+            const now = new Date();
+
+            let filtered = allData.filter(msg => {
+                // 0. Starred Tab Filter
+                if (currentTab === 'starred' && !starredIds.includes(msg.id)) return false;
+
+                // 1. Not Useful Filter
+                if (hideNotUseful && msg.category === 'Not Useful') return false;
+
+                // 2. Category Filter
+                if (!selectedCats.includes(msg.category)) return false;
+                if (msg.category !== 'Uncategorized' && msg.subCategory && !selectedSubs.includes(msg.subCategory)) return false;
+
+                // 3. Search
+                const searchContent = `${msg.content} ${msg.sender} ${msg.group} ${msg.meta.region}`.toLowerCase();
+                if (searchText && !searchContent.includes(searchText)) return false;
+
+                // 4. Date Filter
+                const msgDate = parseDate(msg.date);
+                if (dateRange === 'custom') {
+                    const start = document.getElementById('startDate').value ? new Date(document.getElementById('startDate').value) : null;
+                    const end = document.getElementById('endDate').value ? new Date(document.getElementById('endDate').value) : null;
+
+                    if (start && msgDate < start) return false;
+                    if (end && msgDate > end) return false;
+                } else if (dateRange !== 'all') {
+                    const diffTime = Math.abs(now - msgDate);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    if (diffDays > parseInt(dateRange)) return false;
+                }
+
+                // 5. Smart Filters
+                if (showOnlineOnly && msg.meta.mode !== 'Online') return false;
+                if (showFreeOnly && msg.meta.cost !== 'Free') return false;
+
+                // 6. Confidence
+                if (confidenceLevel === 'High' && msg.confidence !== 'High') return false;
+                if (confidenceLevel === 'Medium' && msg.confidence === 'Low') return false;
+
+                return true;
+            });
+
+            // Sorting
+            filtered.sort((a, b) => {
+                const dateA = parseDate(a.date);
+                const dateB = parseDate(b.date);
+
+                const confScore = { 'High': 3, 'Medium': 2, 'Low': 1 };
+
+                switch (sortOption) {
+                    case 'date_desc': return dateB - dateA;
+                    case 'date_asc': return dateA - dateB;
+                    case 'conf_desc': return confScore[b.confidence] - confScore[a.confidence];
+                    case 'conf_asc': return confScore[a.confidence] - confScore[b.confidence];
+                    default: return dateB - dateA;
+                }
+            });
+
+            renderResults(filtered);
+        }
+
+        function renderResults(messages) {
+            const container = document.getElementById('resultsArea');
+            document.getElementById('statsDisplay').textContent = `Showing ${messages.length} messages`;
+
+            if (messages.length === 0) {
+                container.innerHTML = '<div style="text-align:center; width:100%; color:var(--text-secondary);">No messages found matching filters.</div>';
+                return;
+            }
+
+            container.innerHTML = messages.map(msg => {
+                // Confidence Border Class
+                let borderClass = 'confidence-low';
+                if (msg.confidence === 'High') borderClass = 'confidence-high';
+                else if (msg.confidence === 'Medium') borderClass = 'confidence-med';
+
+                // Auto-link
+                const contentHtml = msg.content.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
+
+                // Star status
+                const isStarred = starredIds.includes(msg.id) ? 'starred' : '';
+                const starIcon = isStarred ? '★' : '☆';
+
+                return `
+                <div class="card ${borderClass}">
+                    <button class="star-btn ${isStarred}" onclick="toggleStar('${msg.id}')">${starIcon}</button>
+                    <div class="card-header">
+                        <div class="card-meta">
+                            <span class="badge badge-cat">${msg.category}</span>
+                            ${msg.subCategory && msg.subCategory !== 'General' ? `<span class="badge badge-sub">${msg.subCategory}</span>` : ''}
+                        </div>
+                        <div class="date-display">${msg.date}</div>
+                    </div>
+                    
+                    <div class="sender-info" style="margin-bottom:10px;">
+                        <span class="sender-name">${msg.sender}</span>
+                        <span class="group-name">📂 ${msg.group}</span>
+                    </div>
+
+                    <div class="card-body">${contentHtml}</div>
+
+                    <div class="card-footer">
+                        <div class="smart-tags">
+                            ${msg.meta.mode !== 'Unknown' ? `<span class="smart-tag">📍 ${msg.meta.mode}</span>` : ''}
+                            ${msg.meta.cost !== 'Unknown' ? `<span class="smart-tag">💰 ${msg.meta.cost}</span>` : ''}
+                            ${msg.meta.region !== 'Unknown' ? `<span class="smart-tag">🌍 ${msg.meta.region}</span>` : ''}
+                            ${msg.meta.phoneNumber ? `<span class="smart-tag">📞 ${msg.meta.phoneNumber}</span>` : ''}
+                            ${msg.meta.urgency ? `<span class="smart-tag" style="color:var(--danger)">🔥 Urgent</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+            }).join('');
+        }
+
+        function renderAnalytics() {
+            // Top Senders
+            const senderCounts = {};
+            allData.forEach(msg => {
+                if (msg.category !== 'Not Useful') {
+                    senderCounts[msg.sender] = (senderCounts[msg.sender] || 0) + 1;
+                }
+            });
+            const sortedSenders = Object.entries(senderCounts).sort((a, b) => b[1] - a[1]).slice(0, 5);
+
+            const senderHtml = sortedSenders.map(([name, count]) => {
+                const max = sortedSenders[0][1];
+                const percent = (count / max) * 100;
+                return `
+                <div class="chart-bar">
+                    <div class="bar-label" title="${name}">${name}</div>
+                    <div class="bar-container">
+                        <div class="bar-fill" style="width: ${percent}%"></div>
+                    </div>
+                    <div class="bar-value">${count}</div>
+                </div>
+            `;
+            }).join('');
+            document.getElementById('topSendersChart').innerHTML = senderHtml;
+
+            // Category Breakdown
+            const catCounts = {};
+            allData.forEach(msg => {
+                catCounts[msg.category] = (catCounts[msg.category] || 0) + 1;
+            });
+            const sortedCats = Object.entries(catCounts).sort((a, b) => b[1] - a[1]);
+
+            const catHtml = sortedCats.map(([name, count]) => {
+                const max = sortedCats[0][1];
+                const percent = (count / max) * 100;
+                return `
+                <div class="chart-bar">
+                    <div class="bar-label">${name}</div>
+                    <div class="bar-container">
+                        <div class="bar-fill" style="width: ${percent}%"></div>
+                    </div>
+                    <div class="bar-value">${count}</div>
+                </div>
+            `;
+            }).join('');
+            document.getElementById('categoryChart').innerHTML = catHtml;
+        }
+
+        function exportData() {
+            // Export currently filtered data
+            // Get current filtered list by re-running filter logic (simplified)
+            // Or just export allData for now to keep it simple, or better, export what's visible
+
+            // Let's export what's visible in resultsArea? No, better to filter again.
+            // Re-using applyFilters logic is hard without refactoring.
+            // Let's just export ALL data for now, or filtered if possible.
+
+            const csvContent = "data:text/csv;charset=utf-8,"
+                + "Date,Sender,Group,Category,SubCategory,Content,Phone\n"
+                + allData.map(e => {
+                    const cleanContent = e.content.replace(/(\r\n|\n|\r)/gm, " ").replace(/"/g, '""');
+                    return `"${e.date}","${e.sender}","${e.group}","${e.category}","${e.subCategory}","${cleanContent}","${e.meta.phoneNumber || ''}"`;
+                }).join("\n");
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "whatsapp_god_export.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        init();
+    </script>
+
+</body>
+
+</html>

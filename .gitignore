@@ -1,0 +1,19 @@
+# System Files
+.DS_Store
+Thumbs.db
+__pycache__/
+*.pyc
+
+# Generated Data
+data.js
+messages.json
+
+# Chat Data (Keep the folder, ignore the content)
+chats/*
+!chats/.gitkeep
+*.txt
+*.vcf
+
+# Node
+node_modules/
+npm-debug.log
